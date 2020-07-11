@@ -26,12 +26,26 @@ public class JogoController {
 		}
 	}
 	
-	public List<Prato> todoPreatosMassa(){
-		return this.pratosMassa;
+	public List<Prato> todosPratos(TipoPrato tipo){
+		if(tipo.equals(TipoPrato.EH_MASSA)) {
+			return this.pratosMassa;
+		}else {
+			return this.pratosNaoMassa;
+		}
 	}
 	
-	public List<Prato> todoPreatosNaoMassa(){
-		return this.pratosNaoMassa;
+	public boolean ehPratoInicial(Prato prato, TipoPrato tipo) {
+		return prato.equals(this.ultimoPrato(tipo));
+	}
+	
+	public Prato ultimoPrato(TipoPrato tipo) {
+		if(tipo.equals(TipoPrato.EH_MASSA)) {
+			int ultimo = this.pratosMassa.size() - 1;
+			return this.pratosMassa.get(ultimo);
+		}else {
+			int ultimo = this.pratosNaoMassa.size() - 1;
+			return this.pratosNaoMassa.get(ultimo);
+		}
 	}
 	
 }

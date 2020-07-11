@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import main.java.controller.JogoController;
 import main.java.model.Prato;
 import main.java.util.enums.TipoPrato;
+import main.java.view.JogoView;
 
 public class EventoBotaoOk implements ActionListener{
 	
@@ -19,63 +20,40 @@ public class EventoBotaoOk implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {	    
-	    Object[][] options = {{"Sim", "Não"}, {"Ok"}};
-		 
-        int resposta = JOptionPane.showOptionDialog(null, "O prato que você pensou é massa?",
-	               "Confirm",
-	               JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options[0], options[0][0]);
+		TipoPrato tipo;
+		boolean naoAcertou = true;
+		
+        int resposta = JOptionPane.showOptionDialog(null, "O prato que você pensou é massa?", "Confirm",
+	               JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, JogoView.OPCOES[0], JogoView.OPCOES[0][0]);
         
-        if (resposta == JOptionPane.YES_OPTION) {
-        	
-        	for(Prato p : jogo.todoPreatosMassa()) {
-    	    	    	    	
-    		    if (resposta == JOptionPane.YES_OPTION) {
-    		    	resposta = JOptionPane.showOptionDialog(null, "O prato que você pensou é " + p.getNome() + "?",
-    			               "Confirm",
-    			               JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options[0], options[0][0]);
-    		    	if (resposta == JOptionPane.YES_OPTION) {
-    		    		JOptionPane.showOptionDialog(null, "Acertei de novo!",
-    				               "Jogo Gourmet",
-    				               JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options[1], options[0][1]);
+        tipo = resposta == JOptionPane.YES_OPTION ? TipoPrato.EH_MASSA : TipoPrato.NAO_EHMASSA;
+    	
+    	for(Prato p : jogo.todosPratos(tipo)) {
+	    	if(jogo.ehPratoInicial(p, tipo)) {
+	    		resposta = JogoView.perguntaSimENao(p.getNome());
+	    	}else {
+	    		resposta = JogoView.perguntaSimENao(p.getDescricao());
+	    		
+	    		if(resposta == JOptionPane.YES_OPTION) {
+	    			resposta = JogoView.perguntaSimENao(p.getNome());
+	    			if(resposta == JOptionPane.NO_OPTION) {
+	    				naoAcertou = true;
     		    		break;
-    		    	}else {		    		
-    		    		String nome = JOptionPane.showInputDialog(null, "Qual prato você pensou?",
-    		                    	  "Desisto", JOptionPane.INFORMATION_MESSAGE);
-    		    		
-    		    		String descricao = JOptionPane.showInputDialog(null, nome + "  é ______ mas " + p.getNome() + " não.",
-    		                    	  	   "Complete", JOptionPane.INFORMATION_MESSAGE);
-    		    		
-    		    		jogo.addPrato(nome, descricao, TipoPrato.EH_MASSA);
-    		    		break;
-    		    	}
-    		    }
-        	}
-        	
-        }else {
-        	for(Prato p : jogo.todoPreatosNaoMassa()) {
-    	    	    	    	
-    		    if (resposta == JOptionPane.YES_OPTION) {
-    		    	resposta = JOptionPane.showOptionDialog(null, "O prato que você pensou é " + p.getNome() + "?",
-    			               "Confirm",
-    			               JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options[0], options[0][0]);
-    		    	if (resposta == JOptionPane.YES_OPTION) {
-    		    		JOptionPane.showOptionDialog(null, "Acertei de novo!",
-    				               "Jogo Gourmet",
-    				               JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options[1], options[0][1]);
-    		    		break;
-    		    	}else {		    		
-    		    		String nome = JOptionPane.showInputDialog(null, "Qual prato você pensou?",
-    		                    	  "Desisto", JOptionPane.INFORMATION_MESSAGE);
-    		    		
-    		    		String descricao = JOptionPane.showInputDialog(null, nome + "  é ______ mas " + p.getNome() + " não.",
-    		                    	  	   "Complete", JOptionPane.INFORMATION_MESSAGE);
-    		    		
-    		    		jogo.addPrato(nome, descricao, TipoPrato.NAO_EHMASSA);
-    		    		break;
-    		    	}
-    		    }
-    		}
-        }
+	    			}
+	    		}
+	    	}
+	    	if (resposta == JOptionPane.YES_OPTION) {
+	    		JogoView.mensagemAcertei();
+	    		naoAcertou = false;
+	    		break;
+	    	}
+    	}
+    	if(naoAcertou) {
+    		String nome = JogoView.mensagemDesisto();
+    		String descricao = JogoView.mensagemComplete(jogo.ultimoPrato(tipo).getNome(), nome);
+    		
+    		jogo.addPrato(nome, descricao, tipo);
+    	}
 	}
 
 }

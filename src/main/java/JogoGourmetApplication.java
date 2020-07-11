@@ -8,7 +8,7 @@ public class JogoGourmetApplication {
 		
 		JogoView j = new JogoView();
 		
-		j.start();
+		j.iniciar();
 		
 	}
 
