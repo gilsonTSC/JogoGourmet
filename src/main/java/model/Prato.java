@@ -1,20 +1,22 @@
 package main.java.model;
 
+import main.java.util.enums.TipoPrato;
+
 public class Prato {
 
 	private String nome;
 	private String descricao;
-	private Boolean massa;
+	private TipoPrato tipo;
 	
 	public Prato() {
 		this.nome = new String();
 		this.descricao = new String();
-		this.massa = null;
+		this.tipo = TipoPrato.NAO_EHMASSA;
 	}
 	
-	public Prato(String nome, String descricao, Boolean massa) {
+	public Prato(String nome, String descricao, TipoPrato tipo) {
 		this.nome = nome;
-		this.massa = massa;
+		this.tipo = tipo;
 		this.descricao = descricao;
 	}
 
@@ -34,12 +36,12 @@ public class Prato {
 		this.descricao = descricao;
 	}
 
-	public Boolean getMassa() {
-		return massa;
+	public TipoPrato getTipo() {
+		return tipo;
 	}
 
-	public void setMassa(Boolean massa) {
-		this.massa = massa;
+	public void setTipo(TipoPrato tipo) {
+		this.tipo = tipo;
 	}
 	
 }
